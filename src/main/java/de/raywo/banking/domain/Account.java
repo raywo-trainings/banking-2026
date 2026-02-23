@@ -1,6 +1,7 @@
 package de.raywo.banking.domain;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class Account {
 
@@ -11,10 +12,10 @@ public class Account {
   private AccountStatus status;
 
 
-  Account(String iban, Customer owner) {
+  public Account(String iban, Customer owner) {
     this.iban = iban;
     this.owner = owner;
-    this.balance = BigDecimal.ZERO;
+    this.balance = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP);
     this.interestRate = 0.0f;
     this.status = AccountStatus.ACTIVE;
   }
@@ -61,13 +62,39 @@ public class Account {
 
 
   public void deposit(BigDecimal amount) {
-    this.balance = balance.add(amount);
+    this.balance = balance.add(amount)
+        .setScale(2, RoundingMode.HALF_UP);
   }
 
 
   public void withdraw(BigDecimal amount) {
-    this.balance = balance.subtract(amount);
+    this.balance = balance.subtract(amount)
+        .setScale(2, RoundingMode.HALF_UP);
   }
 
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == null || getClass() != o.getClass()) return false;
+
+    Account account = (Account) o;
+    return iban.equals(account.iban);
+  }
+
+
+  @Override
+  public int hashCode() {
+    return iban.hashCode();
+  }
+
+
+  @Override
+  public String toString() {
+    return "[" + iban + "]" +
+        ", Saldo: " + balance + "€ " +
+        ", Zinssatz: " + interestRate + "%" +
+        ", Inhaber: " + owner +
+        ", (" + status + ")";
+  }
 
 }

@@ -40,4 +40,29 @@ public class Customer {
     return id;
   }
 
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == null || getClass() != o.getClass()) return false;
+
+    Customer customer = (Customer) o;
+    return id.equals(customer.id);
+  }
+
+
+  @Override
+  public int hashCode() {
+    return id.hashCode();
+  }
+
+
+  @Override
+  public String toString() {
+    String idChunk = id.toString().substring(0, 8);
+
+    return "[" + idChunk + "]: " +
+        name +
+        " (" + city + ")";
+  }
+
 }
