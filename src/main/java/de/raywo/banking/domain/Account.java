@@ -61,13 +61,21 @@ public class Account {
   }
 
 
-  public void deposit(BigDecimal amount) {
+  public void deposit(BigDecimal amount) throws InvalidAmountException {
+    validateAmount(amount);
+
     this.balance = balance.add(amount)
         .setScale(2, RoundingMode.HALF_UP);
   }
 
 
-  public void withdraw(BigDecimal amount) {
+  public void withdraw(BigDecimal amount) throws InvalidAmountException, InsufficentFundsException {
+    validateAmount(amount);
+
+    if (amount.compareTo(balance) > 0) {
+      throw new InsufficentFundsException("Der abzuhebende Betrag übersteigt das verfügbare Guthaben.");
+    }
+
     this.balance = balance.subtract(amount)
         .setScale(2, RoundingMode.HALF_UP);
   }
@@ -95,6 +103,13 @@ public class Account {
         ", Zinssatz: " + interestRate + "%" +
         ", Inhaber: " + owner +
         ", (" + status + ")";
+  }
+
+
+  private static void validateAmount(BigDecimal amount) throws InvalidAmountException {
+    if (amount.compareTo(BigDecimal.ZERO) <= 0) {
+      throw new InvalidAmountException("Der Betrag muss größer 0 sein.");
+    }
   }
 
 }
