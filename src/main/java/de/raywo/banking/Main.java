@@ -1,9 +1,6 @@
 package de.raywo.banking;
 
-import de.raywo.banking.domain.Account;
-import de.raywo.banking.domain.Customer;
-import de.raywo.banking.domain.InsufficentFundsException;
-import de.raywo.banking.domain.InvalidAmountException;
+import de.raywo.banking.domain.*;
 import de.raywo.banking.system.SiBank;
 
 import java.math.BigDecimal;
@@ -16,8 +13,8 @@ public class Main {
     Customer ottokar = new Customer("Ottokar Domma", "Leipzig");
     Customer lieselotte = new Customer("Lieselotte Scharfsinnig", "Hamburg");
 
-    Account acc1 = new Account("DE231234", lieselotte);
-    Account acc2 = new Account("DE129087", ottokar);
+    Account acc1 = new CurrentAccount("DE231234", lieselotte);
+    Account acc2 = new CurrentAccount("DE129087", ottokar);
 
     bank.addCustomer(ottokar);
     bank.addCustomer(lieselotte);
@@ -45,13 +42,12 @@ public class Main {
       acc1.deposit(BigDecimal.valueOf(100));
       System.out.println("Einzahlung erfolgreich. Neuer Saldo: " + acc1.getBalance() + "€");
 
-      acc1.withdraw(BigDecimal.valueOf(10));
+       ((CurrentAccount) acc1).setLimit(BigDecimal.valueOf(100));
+      acc1.withdraw(BigDecimal.valueOf(200));
       System.out.println("Abhebung erfolgreich. Neuer Saldo: " + acc1.getBalance());
 
-    } catch (InvalidAmountException exc) {
+    } catch (InvalidAmountException | InsufficentFundsException exc) {
       System.err.println(exc.getMessage());
-    } catch (InsufficentFundsException e) {
-      System.err.println(e.getMessage());
     }
 
     System.out.println("-------------------");

@@ -3,7 +3,7 @@ package de.raywo.banking.domain;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-public class Account {
+public abstract class Account {
 
   private final String iban;
   private BigDecimal balance;
@@ -72,7 +72,7 @@ public class Account {
   public void withdraw(BigDecimal amount) throws InvalidAmountException, InsufficentFundsException {
     validateAmount(amount);
 
-    if (amount.compareTo(balance) > 0) {
+    if (!isAmountAvailable(amount)) {
       throw new InsufficentFundsException("Der abzuhebende Betrag übersteigt das verfügbare Guthaben.");
     }
 
@@ -103,6 +103,11 @@ public class Account {
         ", Zinssatz: " + interestRate + "%" +
         ", Inhaber: " + owner +
         ", (" + status + ")";
+  }
+
+
+  protected boolean isAmountAvailable(BigDecimal amount) {
+    return amount.compareTo(balance) <= 0;
   }
 
 
