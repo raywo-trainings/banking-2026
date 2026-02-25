@@ -2,6 +2,8 @@ package de.raywo.banking.domain;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class Account {
 
@@ -10,6 +12,7 @@ public abstract class Account {
   private float interestRate;
   private Customer owner;
   private AccountStatus status;
+  private final List<Transaction> transactions;
 
 
   public Account(String iban, Customer owner) {
@@ -18,6 +21,7 @@ public abstract class Account {
     this.balance = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP);
     this.interestRate = 0.0f;
     this.status = AccountStatus.ACTIVE;
+    this.transactions = new ArrayList<>();
   }
 
 
@@ -61,17 +65,28 @@ public abstract class Account {
   }
 
 
-  public void deposit(BigDecimal amount) throws InvalidAmountException {
-    validateAmount(amount);
+  public List<Transaction> getTransactions() {
+    return transactions;
+  }
 
+
+  public void makeTransaction(Transaction transaction) throws InsufficentFundsException, AccountMismatchException {
+    if (!transaction.getIban().equals(iban)) {
+      throw new AccountMismatchException("Die IBAN der Transaktion passt nicht zur IBAN des Kontos.");
+    }
+
+    transaction.applyTo(this);
+    this.transactions.add(transaction);
+  }
+
+
+  void deposit(BigDecimal amount) {
     this.balance = balance.add(amount)
         .setScale(2, RoundingMode.HALF_UP);
   }
 
 
-  public void withdraw(BigDecimal amount) throws InvalidAmountException, InsufficentFundsException {
-    validateAmount(amount);
-
+  void withdraw(BigDecimal amount) throws InsufficentFundsException {
     if (!isAmountAvailable(amount)) {
       throw new InsufficentFundsException("Der abzuhebende Betrag übersteigt das verfügbare Guthaben.");
     }
@@ -108,13 +123,6 @@ public abstract class Account {
 
   protected boolean isAmountAvailable(BigDecimal amount) {
     return amount.compareTo(balance) <= 0;
-  }
-
-
-  private static void validateAmount(BigDecimal amount) throws InvalidAmountException {
-    if (amount.compareTo(BigDecimal.ZERO) <= 0) {
-      throw new InvalidAmountException("Der Betrag muss größer 0 sein.");
-    }
   }
 
 }
