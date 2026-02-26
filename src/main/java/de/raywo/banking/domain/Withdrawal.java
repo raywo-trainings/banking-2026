@@ -1,16 +1,15 @@
 package de.raywo.banking.domain;
 
-import java.math.BigDecimal;
 import java.time.Instant;
 
 public final class Withdrawal extends Transaction {
 
-  public Withdrawal(String iban, String purpose, BigDecimal amount) {
+  public Withdrawal(String iban, String purpose, Money amount) {
     super(iban, purpose, amount);
   }
 
 
-  public Withdrawal(String iban, String purpose, BigDecimal amount, Instant timestamp) {
+  public Withdrawal(String iban, String purpose, Money amount, Instant timestamp) {
     super(iban, purpose, amount, timestamp);
   }
 

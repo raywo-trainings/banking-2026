@@ -1,8 +1,12 @@
 package de.raywo.banking.domain;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+
 public class SavingsAccount extends Account {
 
   private float interestRate;
+
 
   public SavingsAccount(String iban, Customer owner) {
     super(iban, owner);
@@ -24,6 +28,11 @@ public class SavingsAccount extends Account {
 
   @Override
   public String toString() {
-    return super.toString() + ", Habenzins: " + interestRate + "%";
+    DecimalFormat df = (DecimalFormat) NumberFormat.getPercentInstance();
+    df.setMaximumFractionDigits(2);
+    df.setMinimumFractionDigits(2);
+
+    return super.toString() + ", Habenzins: " + df.format(interestRate);
   }
+
 }

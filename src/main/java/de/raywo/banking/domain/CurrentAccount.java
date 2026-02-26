@@ -1,19 +1,18 @@
 package de.raywo.banking.domain;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 public class CurrentAccount extends Account {
 
   private float interestRate;
-  private BigDecimal limit;
+  private Money limit;
 
 
   public CurrentAccount(String iban, Customer owner) {
     super(iban, owner);
     this.interestRate = 0.00f;
-    this.limit = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP);
+    this.limit = Money.zeroEuro();
   }
 
 
@@ -29,27 +28,32 @@ public class CurrentAccount extends Account {
   }
 
 
-  public BigDecimal getLimit() {
+  public Money getLimit() {
     return limit;
   }
 
 
-  public void setLimit(BigDecimal limit) {
-    this.limit = limit.setScale(2, RoundingMode.HALF_UP);
+  public void setLimit(Money limit) {
+    this.limit = limit;
   }
 
 
   @Override
   public String toString() {
+    DecimalFormat df = (DecimalFormat) NumberFormat.getPercentInstance();
+    df.setMaximumFractionDigits(2);
+    df.setMinimumFractionDigits(2);
+
     return super.toString() +
-        ", Dispo: " + limit + "€" +
-        ", Sollzins: " + interestRate + "%";
+        ", Dispo: " + limit +
+        ", Sollzins: " + df.format(interestRate);
   }
 
 
   @Override
-  protected boolean isAmountAvailable(BigDecimal amount) {
-    return amount.compareTo(getBalance().add(limit)) <= 0;
+  protected boolean isAmountAvailable(Money amount) throws CurrencyMismatchException {
+    return amount.amount()
+        .compareTo(getBalance().add(limit).amount()) <= 0;
   }
 
 }
