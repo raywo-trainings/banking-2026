@@ -1,6 +1,7 @@
 package de.raywo.banking;
 
 import de.raywo.banking.domain.*;
+import de.raywo.banking.system.NotFoundException;
 import de.raywo.banking.system.SiBank;
 
 import java.math.BigDecimal;
@@ -43,6 +44,13 @@ public class Main {
     bank.addCustomer(lieselotte);
     bank.addAccount(acc1);
     bank.addAccount(acc2);
+
+    try {
+      Account someAccount = bank.getAccount("DE129087");
+      System.out.println("Gesuchtes Konto: " + someAccount);
+    } catch (NotFoundException e) {
+      System.err.println(e.getMessage());
+    }
 
     System.out.println(bank);
 
