@@ -1,14 +1,14 @@
 package de.raywo.banking.domain;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public abstract class Account {
 
   private final String iban;
-  private BigDecimal balance;
+  private Money balance;
   private float interestRate;
   private Customer owner;
   private AccountStatus status;
@@ -18,7 +18,7 @@ public abstract class Account {
   public Account(String iban, Customer owner) {
     this.iban = iban;
     this.owner = owner;
-    this.balance = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP);
+    this.balance = Money.zeroEuro();
     this.interestRate = 0.0f;
     this.status = AccountStatus.ACTIVE;
     this.transactions = new ArrayList<>();
@@ -30,7 +30,7 @@ public abstract class Account {
   }
 
 
-  public BigDecimal getBalance() {
+  public Money getBalance() {
     return balance;
   }
 
@@ -80,19 +80,17 @@ public abstract class Account {
   }
 
 
-  void deposit(BigDecimal amount) {
-    this.balance = balance.add(amount)
-        .setScale(2, RoundingMode.HALF_UP);
+  void deposit(Money amount) {
+    this.balance = this.balance.add(amount);
   }
 
 
-  void withdraw(BigDecimal amount) throws InsufficentFundsException {
+  void withdraw(Money amount) throws InsufficentFundsException {
     if (!isAmountAvailable(amount)) {
       throw new InsufficentFundsException("Der abzuhebende Betrag übersteigt das verfügbare Guthaben.");
     }
 
-    this.balance = balance.subtract(amount)
-        .setScale(2, RoundingMode.HALF_UP);
+    this.balance = balance.subtract(amount);
   }
 
 
@@ -113,16 +111,22 @@ public abstract class Account {
 
   @Override
   public String toString() {
+    NumberFormat df = NumberFormat.getPercentInstance();
+    df.setMaximumFractionDigits(2);
+    df.setMinimumFractionDigits(2);
+
     return "[" + iban + "]" +
-        ", Saldo: " + balance + "€ " +
-        ", Zinssatz: " + interestRate + "%" +
+        ", Saldo: " + balance +
+        ", Zinssatz: " + df.format(interestRate) +
         ", Inhaber: " + owner +
         ", (" + status + ")";
   }
 
 
-  protected boolean isAmountAvailable(BigDecimal amount) {
-    return amount.compareTo(balance) <= 0;
+  protected boolean isAmountAvailable(Money amount) {
+    Comparator<Money> comparator = Money.sameCurrencyComparator(balance.currency());
+
+    return comparator.compare(amount, balance) <= 0;
   }
 
 }

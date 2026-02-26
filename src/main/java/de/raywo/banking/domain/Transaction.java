@@ -1,25 +1,24 @@
 package de.raywo.banking.domain;
 
-import java.math.BigDecimal;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 
 sealed public abstract class Transaction permits Deposit, Withdrawal {
   private final String iban;
   private final String purpose;
-  private final BigDecimal amount;
+  private final Money amount;
   private final Instant timestamp;
 
 
-  public Transaction(String iban, String purpose, BigDecimal amount) {
+  public Transaction(String iban, String purpose, Money amount) {
     this(iban, purpose, amount, Instant.now());
   }
 
 
-  public Transaction(String iban, String purpose, BigDecimal amount, Instant timestamp) {
+  public Transaction(String iban, String purpose, Money amount, Instant timestamp) {
     this.iban = iban;
     this.purpose = purpose;
     this.amount = amount;
@@ -37,7 +36,7 @@ sealed public abstract class Transaction permits Deposit, Withdrawal {
   }
 
 
-  public BigDecimal getAmount() {
+  public Money getAmount() {
     return amount;
   }
 
@@ -54,13 +53,14 @@ sealed public abstract class Transaction permits Deposit, Withdrawal {
 
   @Override
   public String toString() {
-    LocalDateTime ldt = LocalDateTime.ofInstant(timestamp, ZoneId.systemDefault());
+    ZonedDateTime ldt = ZonedDateTime.ofInstant(timestamp, ZoneId.systemDefault());
     String formattedTimestamp = DateTimeFormatter
-        .ofLocalizedDateTime(FormatStyle.MEDIUM).format(ldt);
+        .ofLocalizedDateTime(FormatStyle.MEDIUM)
+        .format(ldt);
 
     return formattedTimestamp +
         ": (" + getSymbol() + ") " +
-        amount + "€, VWZ: " +
+        amount + ", VWZ: " +
         purpose;
   }
 }
