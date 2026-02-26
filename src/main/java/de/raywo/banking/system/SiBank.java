@@ -3,10 +3,9 @@ package de.raywo.banking.system;
 import de.raywo.banking.domain.Account;
 import de.raywo.banking.domain.Customer;
 import de.raywo.banking.persistence.AccountRepository;
+import de.raywo.banking.persistence.CustomerRepository;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 public class SiBank {
 
@@ -14,7 +13,7 @@ public class SiBank {
   private String city;
   private final String bic;
   private final AccountRepository accountRepository;
-  private final List<Customer> customers;
+  private final CustomerRepository customerRepository;
 
 
   public SiBank(String name, String city, String bic) {
@@ -22,7 +21,7 @@ public class SiBank {
     this.city = city;
     this.bic = bic;
     this.accountRepository = new AccountRepository();
-    this.customers = new ArrayList<>();
+    this.customerRepository = new CustomerRepository();
   }
 
 
@@ -56,8 +55,8 @@ public class SiBank {
   }
 
 
-  public List<Customer> getCustomers() {
-    return customers;
+  public Collection<Customer> getCustomers() {
+    return customerRepository.findAll();
   }
 
 
@@ -69,12 +68,12 @@ public class SiBank {
   public Account getAccount(String iban) throws NotFoundException {
     return accountRepository
         .findById(iban)
-        .orElseThrow(()-> new NotFoundException("Ein Konto mit der IBAN " + iban + " existiert nicht"));
+        .orElseThrow(() -> new NotFoundException("Ein Konto mit der IBAN " + iban + " existiert nicht"));
   }
 
 
   public void addCustomer(Customer customer) {
-    customers.add(customer);
+    customerRepository.save(customer);
   }
 
 
