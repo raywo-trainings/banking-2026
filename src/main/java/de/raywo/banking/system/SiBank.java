@@ -7,6 +7,7 @@ import de.raywo.banking.persistence.AccountRepository;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 public class SiBank {
 
@@ -75,6 +76,25 @@ public class SiBank {
 
   public void addCustomer(Customer customer) {
     customers.add(customer);
+  }
+
+
+  public Customer getCustomer(UUID id) throws NotFoundException {
+    return customers.stream()
+        .filter(c -> c.getId().equals(id))
+        .findFirst()
+        .orElseThrow(() -> new NotFoundException("Ein Kunde mit der ID " + id + " existiert nicht."));
+  }
+
+
+  public void removeCustomer(Customer customer) {
+    customers.remove(customer);
+  }
+
+
+  public void removeAccount(String iban) throws NotFoundException {
+    Account account = getAccount(iban);
+    accountRepository.delete(account);
   }
 
 
