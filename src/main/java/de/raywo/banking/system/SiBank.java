@@ -5,17 +5,19 @@ import de.raywo.banking.domain.Customer;
 import de.raywo.banking.persistence.AccountRepository;
 import de.raywo.banking.persistence.CustomerRepository;
 import de.raywo.banking.persistence.FileStorage;
+import de.raywo.banking.persistence.Repository;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.UUID;
 
 public class SiBank {
 
   private String name;
   private String city;
   private final String bic;
-  private final AccountRepository accountRepository;
-  private final CustomerRepository customerRepository;
+  private final Repository<String, Account> accountRepository;
+  private final Repository<UUID, Customer> customerRepository;
 
   private static SiBank instance;
 
