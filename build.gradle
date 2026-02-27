@@ -1,5 +1,14 @@
 plugins {
   id 'java'
+  id 'application'
+}
+
+application {
+  mainClass = 'de.raywo.banking.Main'
+}
+
+run {
+  standardInput = System.in
 }
 
 group = 'de.raywo.banking'
