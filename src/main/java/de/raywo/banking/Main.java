@@ -96,7 +96,7 @@ public class Main {
 //      acc1.withdraw(BigDecimal.valueOf(200));
 //      System.out.println("Abhebung erfolgreich. Neuer Saldo: " + acc1.getBalance());
 
-    } catch (InvalidAmountException | InsufficentFundsException | AccountMismatchException | CurrencyMismatchException exc) {
+    } catch (InvalidAmountException | InsufficientFundsException | AccountMismatchException | CurrencyMismatchException exc) {
       System.err.println(exc.getMessage());
     }
 

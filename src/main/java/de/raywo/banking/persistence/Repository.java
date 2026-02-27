@@ -1,10 +1,12 @@
 package de.raywo.banking.persistence;
 
+import de.raywo.banking.domain.Identifiable;
+
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Optional;
 
-public interface Repository<Id, T> {
+public interface Repository<Id, T extends Identifiable<Id>> {
 
   void save(T entity);
 

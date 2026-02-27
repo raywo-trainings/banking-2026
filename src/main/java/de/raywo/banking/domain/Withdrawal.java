@@ -15,7 +15,7 @@ public final class Withdrawal extends Transaction {
 
 
   @Override
-  public void applyTo(Account account) throws InsufficentFundsException {
+  void applyTo(Account account) throws InsufficientFundsException {
     account.withdraw(getAmount());
   }
 

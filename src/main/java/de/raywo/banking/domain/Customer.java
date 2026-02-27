@@ -3,7 +3,7 @@ package de.raywo.banking.domain;
 import java.io.Serializable;
 import java.util.UUID;
 
-public class Customer implements Serializable {
+public class Customer implements Serializable, Identifiable<UUID> {
 
   private final UUID id;
   private String name;
@@ -37,6 +37,7 @@ public class Customer implements Serializable {
   }
 
 
+  @Override
   public UUID getId() {
     return id;
   }

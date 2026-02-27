@@ -15,7 +15,7 @@ public final class Deposit extends Transaction {
 
 
   @Override
-  public void applyTo(Account account) {
+  void applyTo(Account account) {
     account.deposit(getAmount());
   }
 

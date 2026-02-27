@@ -48,7 +48,7 @@ sealed public abstract class Transaction implements Serializable
   }
 
 
-  abstract void applyTo(Account account) throws InsufficentFundsException;
+  abstract void applyTo(Account account) throws InsufficientFundsException;
 
   abstract String getSymbol();
 

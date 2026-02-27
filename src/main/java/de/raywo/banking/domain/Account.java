@@ -3,10 +3,11 @@ package de.raywo.banking.domain;
 import java.io.Serializable;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public abstract class Account implements Serializable {
+public abstract class Account implements Serializable, Identifiable<String> {
 
   private final String iban;
   private Money balance;
@@ -23,6 +24,12 @@ public abstract class Account implements Serializable {
     this.interestRate = 0.0f;
     this.status = AccountStatus.ACTIVE;
     this.transactions = new ArrayList<>();
+  }
+
+
+  @Override
+  public String getId() {
+    return iban;
   }
 
 
@@ -67,11 +74,11 @@ public abstract class Account implements Serializable {
 
 
   public List<Transaction> getTransactions() {
-    return transactions;
+    return Collections.unmodifiableList(transactions);
   }
 
 
-  public void makeTransaction(Transaction transaction) throws InsufficentFundsException, AccountMismatchException {
+  public void makeTransaction(Transaction transaction) throws InsufficientFundsException, AccountMismatchException {
     if (!transaction.getIban().equals(iban)) {
       throw new AccountMismatchException("Die IBAN der Transaktion passt nicht zur IBAN des Kontos.");
     }
@@ -86,9 +93,9 @@ public abstract class Account implements Serializable {
   }
 
 
-  void withdraw(Money amount) throws InsufficentFundsException {
+  void withdraw(Money amount) throws InsufficientFundsException {
     if (!isAmountAvailable(amount)) {
-      throw new InsufficentFundsException("Der abzuhebende Betrag übersteigt das verfügbare Guthaben.");
+      throw new InsufficientFundsException("Der abzuhebende Betrag übersteigt das verfügbare Guthaben.");
     }
 
     this.balance = balance.subtract(amount);
