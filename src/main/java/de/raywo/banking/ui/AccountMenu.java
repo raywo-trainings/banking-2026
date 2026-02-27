@@ -1,7 +1,6 @@
 package de.raywo.banking.ui;
 
 import de.raywo.banking.domain.*;
-import de.raywo.banking.system.NotFoundException;
 import de.raywo.banking.system.SiBank;
 
 import java.math.BigDecimal;
@@ -139,12 +138,8 @@ public class AccountMenu {
     Account account = selectAccount("löschen");
     if (account == null) return;
 
-    try {
-      bank.removeAccount(account.getIban());
-      System.out.println("Konto wurde gelöscht: " + account);
-    } catch (NotFoundException e) {
-      System.out.println("Fehler: " + e.getMessage());
-    }
+    bank.removeAccount(account.getIban());
+    System.out.println("Konto wurde gelöscht: " + account);
   }
 
 

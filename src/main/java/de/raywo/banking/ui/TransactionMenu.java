@@ -40,7 +40,7 @@ public class TransactionMenu {
     try {
       account.makeTransaction(deposit);
       System.out.println("Einzahlung erfolgreich. Neuer Saldo: " + account.getBalance());
-    } catch (InsufficentFundsException | AccountMismatchException e) {
+    } catch (InsufficientFundsException | AccountMismatchException e) {
       System.out.println("Fehler: " + e.getMessage());
     }
   }
@@ -67,7 +67,7 @@ public class TransactionMenu {
     try {
       account.makeTransaction(withdrawal);
       System.out.println("Auszahlung erfolgreich. Neuer Saldo: " + account.getBalance());
-    } catch (InsufficentFundsException e) {
+    } catch (InsufficientFundsException e) {
       System.out.println("Fehler: Nicht genügend Guthaben. " + e.getMessage());
     } catch (AccountMismatchException e) {
       System.out.println("Fehler: " + e.getMessage());
