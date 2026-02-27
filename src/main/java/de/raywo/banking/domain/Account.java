@@ -1,27 +1,28 @@
 package de.raywo.banking.domain;
 
 import java.io.Serializable;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 public abstract class Account implements Serializable, Identifiable<String> {
 
   private final String iban;
   private Money balance;
-  private float interestRate;
   private Customer owner;
   private AccountStatus status;
   private final List<Transaction> transactions;
 
 
   public Account(String iban, Customer owner) {
+    Objects.requireNonNull(iban, "iban darf nicht null sein");
+    Objects.requireNonNull(owner, "owner darf nicht null sein");
+
     this.iban = iban;
     this.owner = owner;
     this.balance = Money.zeroEuro();
-    this.interestRate = 0.0f;
     this.status = AccountStatus.ACTIVE;
     this.transactions = new ArrayList<>();
   }
@@ -40,16 +41,6 @@ public abstract class Account implements Serializable, Identifiable<String> {
 
   public Money getBalance() {
     return balance;
-  }
-
-
-  public float getInterestRate() {
-    return interestRate;
-  }
-
-
-  public void setInterestRate(float interestRate) {
-    this.interestRate = interestRate;
   }
 
 
@@ -119,13 +110,8 @@ public abstract class Account implements Serializable, Identifiable<String> {
 
   @Override
   public String toString() {
-    NumberFormat df = NumberFormat.getPercentInstance();
-    df.setMaximumFractionDigits(2);
-    df.setMinimumFractionDigits(2);
-
     return "[" + iban + "]" +
         ", Saldo: " + balance +
-        ", Zinssatz: " + df.format(interestRate) +
         ", Inhaber: " + owner +
         ", (" + status + ")";
   }

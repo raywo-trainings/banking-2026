@@ -18,16 +18,6 @@ public class FileStorage<Id, T> implements Storage<Id, T> {
   }
 
 
-  @Deprecated
-  public void saveAllOld(Map<Id, T> collection) throws IOException {
-    FileOutputStream fos = new FileOutputStream(path);
-    ObjectOutputStream outStream = new ObjectOutputStream(fos);
-    outStream.writeObject(collection);
-    outStream.close();
-    fos.close();
-  }
-
-
   @Override
   public void saveAll(Map<Id, T> collection) throws IOException {
     Path file = Path.of(path);
@@ -47,20 +37,6 @@ public class FileStorage<Id, T> implements Storage<Id, T> {
 
       oos.writeObject(collection);
     }
-  }
-
-
-  @Deprecated
-  public Map<Id, T> readAllOld() throws IOException, ClassNotFoundException {
-    FileInputStream fis = new FileInputStream(path);
-    ObjectInputStream inputStream = new ObjectInputStream(fis);
-
-    final Object readObject = inputStream.readObject();
-
-    inputStream.close();
-    fis.close();
-
-    return (Map<Id, T>) readObject;
   }
 
 

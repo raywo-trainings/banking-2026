@@ -7,14 +7,16 @@ import de.raywo.banking.persistence.CustomerRepository;
 import de.raywo.banking.persistence.FileStorage;
 import de.raywo.banking.persistence.Repository;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.NoSuchFileException;
 import java.util.Collection;
 import java.util.UUID;
 
 public class SiBank {
 
-  private String name;
-  private String city;
+  private final String name;
+  private final String city;
   private final String bic;
   private final Repository<String, Account> accountRepository;
   private final Repository<UUID, Customer> customerRepository;
@@ -22,9 +24,17 @@ public class SiBank {
   private static SiBank instance;
 
 
-  public static SiBank getInstance(String name, String city, String bic) {
+  public static void initialize(String name, String city, String bic) {
+    if (instance != null) {
+      throw new IllegalStateException("SiBank wurde bereits initialisiert.");
+    }
+    instance = new SiBank(name, city, bic);
+  }
+
+
+  public static SiBank getInstance() {
     if (instance == null) {
-      instance = new SiBank(name, city, bic);
+      throw new IllegalStateException("SiBank wurde noch nicht initialisiert. Bitte zuerst initialize() aufrufen.");
     }
     return instance;
   }
@@ -40,9 +50,10 @@ public class SiBank {
     try {
       this.accountRepository.initialize();
       this.customerRepository.initialize();
+    } catch (FileNotFoundException | NoSuchFileException e) {
+      System.out.println("Keine Datendateien gefunden. Starte mit leeren Daten.");
     } catch (IOException | ClassNotFoundException e) {
-      // Do nothing because no file existed
-      System.out.println("Keine Datendateien gefunden.");
+      throw new RuntimeException("Fehler beim Laden der Datendateien.", e);
     }
   }
 
@@ -52,18 +63,8 @@ public class SiBank {
   }
 
 
-  public void setName(String name) {
-    this.name = name;
-  }
-
-
   public String getCity() {
     return city;
-  }
-
-
-  public void setCity(String city) {
-    this.city = city;
   }
 
 

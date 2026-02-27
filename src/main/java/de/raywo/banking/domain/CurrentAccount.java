@@ -5,26 +5,24 @@ import java.text.NumberFormat;
 
 public class CurrentAccount extends Account {
 
-  private float interestRate;
+  private float debitInterestRate;
   private Money limit;
 
 
   public CurrentAccount(String iban, Customer owner) {
     super(iban, owner);
-    this.interestRate = 0.00f;
+    this.debitInterestRate = 0.00f;
     this.limit = Money.zeroEuro();
   }
 
 
-  @Override
-  public float getInterestRate() {
-    return interestRate;
+  public float getDebitInterestRate() {
+    return debitInterestRate;
   }
 
 
-  @Override
-  public void setInterestRate(float interestRate) {
-    this.interestRate = interestRate;
+  public void setDebitInterestRate(float debitInterestRate) {
+    this.debitInterestRate = debitInterestRate;
   }
 
 
@@ -46,7 +44,7 @@ public class CurrentAccount extends Account {
 
     return super.toString() +
         ", Dispo: " + limit +
-        ", Sollzins: " + df.format(interestRate);
+        ", Sollzins: " + df.format(debitInterestRate);
   }
 
 

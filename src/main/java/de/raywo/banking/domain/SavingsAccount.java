@@ -5,24 +5,22 @@ import java.text.NumberFormat;
 
 public class SavingsAccount extends Account {
 
-  private float interestRate;
+  private float creditInterestRate;
 
 
   public SavingsAccount(String iban, Customer owner) {
     super(iban, owner);
-    this.interestRate = 0.0f;
+    this.creditInterestRate = 0.0f;
   }
 
 
-  @Override
-  public float getInterestRate() {
-    return interestRate;
+  public float getCreditInterestRate() {
+    return creditInterestRate;
   }
 
 
-  @Override
-  public void setInterestRate(float interestRate) {
-    this.interestRate = interestRate;
+  public void setCreditInterestRate(float creditInterestRate) {
+    this.creditInterestRate = creditInterestRate;
   }
 
 
@@ -32,7 +30,7 @@ public class SavingsAccount extends Account {
     df.setMaximumFractionDigits(2);
     df.setMinimumFractionDigits(2);
 
-    return super.toString() + ", Habenzins: " + df.format(interestRate);
+    return super.toString() + ", Habenzins: " + df.format(creditInterestRate);
   }
 
 }

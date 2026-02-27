@@ -42,15 +42,12 @@ package "de.raywo.banking.domain" {
   abstract class Account {
     - iban: String
     - balance: Money
-    - interestRate: float
     - owner: Customer
     - status: AccountStatus
     - transactions: List<Transaction>
     + getId(): String
     + getIban(): String
     + getBalance(): Money
-    + getInterestRate(): float
-    + setInterestRate(interestRate: float): void
     + getOwner(): Customer
     + setOwner(owner: Customer): void
     + getStatus(): AccountStatus
@@ -63,19 +60,19 @@ package "de.raywo.banking.domain" {
   }
 
   class CurrentAccount {
-    - interestRate: float
+    - debitInterestRate: float
     - limit: Money
-    + getInterestRate(): float
-    + setInterestRate(interestRate: float): void
+    + getDebitInterestRate(): float
+    + setDebitInterestRate(debitInterestRate: float): void
     + getLimit(): Money
     + setLimit(limit: Money): void
     # isAmountAvailable(amount: Money): boolean
   }
 
   class SavingsAccount {
-    - interestRate: float
-    + getInterestRate(): float
-    + setInterestRate(interestRate: float): void
+    - creditInterestRate: float
+    + getCreditInterestRate(): float
+    + setCreditInterestRate(creditInterestRate: float): void
   }
 
   abstract class Transaction <<sealed>> {
@@ -104,7 +101,6 @@ package "de.raywo.banking.domain" {
   class AccountMismatchException <<Exception>>
   class InsufficientFundsException <<Exception>>
   class CurrencyMismatchException <<RuntimeException>>
-  class InvalidAmountException <<RuntimeException>>
 
   ' Domain-interne Beziehungen
   Identifiable <|.. Account
@@ -191,15 +187,15 @@ package "de.raywo.banking.persistence" {
 package "de.raywo.banking.system" {
 
   class SiBank {
-    - name: String
-    - city: String
-    - bic: String
+    - name: String {final}
+    - city: String {final}
+    - bic: String {final}
     - accountRepository: Repository<String, Account>
     - customerRepository: Repository<UUID, Customer>
+    + {static} initialize(name: String, city: String, bic: String): void
+    + {static} getInstance(): SiBank
     + getName(): String
-    + setName(name: String): void
     + getCity(): String
-    + setCity(city: String): void
     + getBic(): String
     + getAccounts(): Collection<Account>
     + getCustomers(): Collection<Customer>

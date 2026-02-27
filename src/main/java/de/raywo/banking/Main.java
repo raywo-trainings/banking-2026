@@ -9,7 +9,8 @@ import java.math.BigDecimal;
 public class Main {
 
   public static void main(String[] args) throws IOException {
-    SiBank bank = SiBank.getInstance("Signal Iduna Bank", "Hamburg", "SIBAHH26");
+    SiBank.initialize("Signal Iduna Bank", "Hamburg", "SIBAHH26");
+    SiBank bank = SiBank.getInstance();
 
     if (bank.getAccounts().isEmpty()) {
       initializeData(bank);
@@ -96,7 +97,7 @@ public class Main {
 //      acc1.withdraw(BigDecimal.valueOf(200));
 //      System.out.println("Abhebung erfolgreich. Neuer Saldo: " + acc1.getBalance());
 
-    } catch (InvalidAmountException | InsufficientFundsException | AccountMismatchException | CurrencyMismatchException exc) {
+    } catch (InsufficientFundsException | AccountMismatchException | CurrencyMismatchException exc) {
       System.err.println(exc.getMessage());
     }
 

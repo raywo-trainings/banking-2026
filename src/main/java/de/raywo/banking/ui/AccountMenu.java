@@ -112,7 +112,11 @@ public class AccountMenu {
     if (!rateInput.isEmpty()) {
       try {
         float rate = Float.parseFloat(rateInput.replace(",", ".")) / 100f;
-        account.setInterestRate(rate);
+        if (account instanceof CurrentAccount currentAccount) {
+          currentAccount.setDebitInterestRate(rate);
+        } else if (account instanceof SavingsAccount savingsAccount) {
+          savingsAccount.setCreditInterestRate(rate);
+        }
       } catch (NumberFormatException e) {
         System.out.println("Ungültiger Zinssatz. Zinssatz wurde nicht geändert.");
       }

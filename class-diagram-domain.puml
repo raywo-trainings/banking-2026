@@ -46,15 +46,12 @@ class Customer {
 abstract class Account {
   - iban: String
   - balance: Money
-  - interestRate: float
   - owner: Customer
   - status: AccountStatus
   - transactions: List<Transaction>
   + getId(): String
   + getIban(): String
   + getBalance(): Money
-  + getInterestRate(): float
-  + setInterestRate(interestRate: float): void
   + getOwner(): Customer
   + setOwner(owner: Customer): void
   + getStatus(): AccountStatus
@@ -67,19 +64,19 @@ abstract class Account {
 }
 
 class CurrentAccount {
-  - interestRate: float
+  - debitInterestRate: float
   - limit: Money
-  + getInterestRate(): float
-  + setInterestRate(interestRate: float): void
+  + getDebitInterestRate(): float
+  + setDebitInterestRate(debitInterestRate: float): void
   + getLimit(): Money
   + setLimit(limit: Money): void
   # isAmountAvailable(amount: Money): boolean
 }
 
 class SavingsAccount {
-  - interestRate: float
-  + getInterestRate(): float
-  + setInterestRate(interestRate: float): void
+  - creditInterestRate: float
+  + getCreditInterestRate(): float
+  + setCreditInterestRate(creditInterestRate: float): void
 }
 
 ' ── Transaction-Hierarchie (sealed) ──
@@ -112,7 +109,6 @@ class Withdrawal <<final>> {
 class AccountMismatchException <<Exception>>
 class InsufficientFundsException <<Exception>>
 class CurrencyMismatchException <<RuntimeException>>
-class InvalidAmountException <<RuntimeException>>
 
 ' ── Beziehungen ──
 

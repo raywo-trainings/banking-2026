@@ -1,6 +1,7 @@
 package de.raywo.banking.domain;
 
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.UUID;
 
 public class Customer implements Serializable, Identifiable<UUID> {
@@ -11,6 +12,9 @@ public class Customer implements Serializable, Identifiable<UUID> {
 
 
   public Customer(String name, String city) {
+    Objects.requireNonNull(name, "name darf nicht null sein");
+    Objects.requireNonNull(city, "city darf nicht null sein");
+
     this.id = UUID.randomUUID();
     this.name = name;
     this.city = city;
@@ -23,6 +27,7 @@ public class Customer implements Serializable, Identifiable<UUID> {
 
 
   public void setName(String name) {
+    Objects.requireNonNull(name, "name darf nicht null sein");
     this.name = name;
   }
 
@@ -33,6 +38,7 @@ public class Customer implements Serializable, Identifiable<UUID> {
 
 
   public void setCity(String city) {
+    Objects.requireNonNull(city, "city darf nicht null sein");
     this.city = city;
   }
 
