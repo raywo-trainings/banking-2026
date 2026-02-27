@@ -1,12 +1,14 @@
 package de.raywo.banking.domain;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 
-sealed public abstract class Transaction permits Deposit, Withdrawal {
+sealed public abstract class Transaction implements Serializable
+    permits Deposit, Withdrawal {
   private final String iban;
   private final String purpose;
   private final Money amount;

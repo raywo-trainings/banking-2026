@@ -1,15 +1,51 @@
 package de.raywo.banking;
 
 import de.raywo.banking.domain.*;
-import de.raywo.banking.system.NotFoundException;
 import de.raywo.banking.system.SiBank;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 
 public class Main {
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IOException {
     SiBank bank = new SiBank("Signal Iduna Bank", "Hamburg", "SIBAHH26");
+
+    if (bank.getAccounts().isEmpty()) {
+      initializeData(bank);
+    }
+
+//    try {
+//      Account someAccount = bank.getAccount("DE129087");
+//      System.out.println("Gesuchtes Konto: " + someAccount);
+//    } catch (NotFoundException e) {
+//      System.err.println(e.getMessage());
+//    }
+
+    System.out.println("-------------------");
+    System.out.println("Bankinformationen");
+    System.out.println(bank);
+
+    System.out.println("-------------------");
+    System.out.println("Kundenliste");
+
+    for (Customer customer : bank.getCustomers()) {
+      System.out.println(customer);
+    }
+
+    System.out.println("-------------------");
+    System.out.println("Konten");
+
+    for (Account account : bank.getAccounts()) {
+      System.out.println(account);
+    }
+
+    bank.persist();
+  }
+
+
+  private static void initializeData(SiBank bank) {
+    System.out.println("Initialisiere Daten...");
 
     Customer ottokar = new Customer("Ottokar Domma", "Leipzig");
     Customer lieselotte = new Customer("Lieselotte Scharfsinnig", "Hamburg");
@@ -46,30 +82,7 @@ public class Main {
     bank.addAccount(acc2);
 
     try {
-      Account someAccount = bank.getAccount("DE129087");
-      System.out.println("Gesuchtes Konto: " + someAccount);
-    } catch (NotFoundException e) {
-      System.err.println(e.getMessage());
-    }
-
-    System.out.println(bank);
-
-    System.out.println("-------------------");
-    System.out.println("Kundenliste");
-
-    for (Customer customer : bank.getCustomers()) {
-      System.out.println(customer);
-    }
-
-    System.out.println("-------------------");
-    System.out.println("Konten");
-
-    for (Account account : bank.getAccounts()) {
-      System.out.println(account);
-    }
-
-    System.out.println("100€ einzahlen");
-    try {
+      System.out.println("Starte Einzahlungen:");
       acc1.makeTransaction(deposit1);
       acc1.makeTransaction(deposit2);
       acc1.makeTransaction(deposit3);
@@ -87,12 +100,7 @@ public class Main {
       System.err.println(exc.getMessage());
     }
 
-    System.out.println("-------------------");
-    System.out.println("Konten");
-
-    for (Account account : bank.getAccounts()) {
-      System.out.println(account);
-    }
+    System.out.println("Daten erfolgreich initialisiert.");
   }
 
 }

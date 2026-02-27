@@ -1,5 +1,6 @@
 package de.raywo.banking.persistence;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -16,5 +17,9 @@ public interface Repository<Id, T> {
   void deleteAll();
 
   int count();
+
+  void persist() throws IOException;
+
+  void initialize() throws IOException, ClassNotFoundException;
 
 }

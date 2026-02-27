@@ -4,7 +4,9 @@ import de.raywo.banking.domain.Account;
 import de.raywo.banking.domain.Customer;
 import de.raywo.banking.persistence.AccountRepository;
 import de.raywo.banking.persistence.CustomerRepository;
+import de.raywo.banking.persistence.FileStorage;
 
+import java.io.IOException;
 import java.util.Collection;
 
 public class SiBank {
@@ -20,8 +22,16 @@ public class SiBank {
     this.name = name;
     this.city = city;
     this.bic = bic;
-    this.accountRepository = new AccountRepository();
-    this.customerRepository = new CustomerRepository();
+    this.accountRepository = new AccountRepository(new FileStorage<>("accounts.bin"));
+    this.customerRepository = new CustomerRepository(new FileStorage<>("customers.bin"));
+
+    try {
+      this.accountRepository.initialize();
+      this.customerRepository.initialize();
+    } catch (IOException | ClassNotFoundException e) {
+      // Do nothing because no file existed
+      System.out.println("Keine Datendateien gefunden.");
+    }
   }
 
 
@@ -74,6 +84,12 @@ public class SiBank {
 
   public void addCustomer(Customer customer) {
     customerRepository.save(customer);
+  }
+
+
+  public void persist() throws IOException {
+    accountRepository.persist();
+    customerRepository.persist();
   }
 
 

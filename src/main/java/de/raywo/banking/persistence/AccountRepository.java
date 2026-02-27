@@ -2,6 +2,7 @@ package de.raywo.banking.persistence;
 
 import de.raywo.banking.domain.Account;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,7 +10,14 @@ import java.util.Optional;
 
 public class AccountRepository implements Repository<String, Account> {
 
-  private final Map<String, Account> accounts = new HashMap<>();
+  private final Storage<String, Account> storage;
+
+  private Map<String, Account> accounts = new HashMap<>();
+
+
+  public AccountRepository(Storage<String, Account> storage) {
+    this.storage = storage;
+  }
 
 
   public void save(Account account) {
@@ -39,6 +47,18 @@ public class AccountRepository implements Repository<String, Account> {
 
   public int count() {
     return accounts.size();
+  }
+
+
+  @Override
+  public void persist() throws IOException {
+    storage.saveAll(accounts);
+  }
+
+
+  @Override
+  public void initialize() throws IOException, ClassNotFoundException {
+    this.accounts = storage.readAll();
   }
 
 }
