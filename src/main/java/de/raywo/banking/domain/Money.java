@@ -1,5 +1,6 @@
 package de.raywo.banking.domain;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.NumberFormat;
@@ -10,7 +11,7 @@ import java.util.Objects;
 public record Money(
     BigDecimal amount,
     Currency currency
-) {
+) implements Serializable {
 
   public Money {
     Objects.requireNonNull(amount);

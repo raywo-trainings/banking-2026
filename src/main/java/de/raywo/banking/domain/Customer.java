@@ -1,8 +1,9 @@
 package de.raywo.banking.domain;
 
+import java.io.Serializable;
 import java.util.UUID;
 
-public class Customer {
+public class Customer implements Serializable {
 
   private final UUID id;
   private String name;

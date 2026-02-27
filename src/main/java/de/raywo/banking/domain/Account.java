@@ -1,11 +1,12 @@
 package de.raywo.banking.domain;
 
+import java.io.Serializable;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public abstract class Account {
+public abstract class Account implements Serializable {
 
   private final String iban;
   private Money balance;
