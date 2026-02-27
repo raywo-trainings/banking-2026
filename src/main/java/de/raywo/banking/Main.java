@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 public class Main {
 
   public static void main(String[] args) throws IOException {
-    SiBank bank = new SiBank("Signal Iduna Bank", "Hamburg", "SIBAHH26");
+    SiBank bank = SiBank.getInstance("Signal Iduna Bank", "Hamburg", "SIBAHH26");
 
     if (bank.getAccounts().isEmpty()) {
       initializeData(bank);
