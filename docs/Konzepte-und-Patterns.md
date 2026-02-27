@@ -102,7 +102,6 @@ auftreten sollten:
 
 - `CurrencyMismatchException` – eine Rechenoperation mit unterschiedlichen
   Währungen
-- `InvalidAmountException` – ein ungültiger Betrag
 
 Der Compiler erzwingt bei Checked Exceptions, dass Sie sich um den Fehlerfall
 kümmern. Bei Unchecked Exceptions tut er das nicht, weil davon ausgegangen wird,
@@ -377,16 +376,25 @@ sicher, dass von einer Klasse nur genau eine Instanz existiert und bietet einen
 globalen Zugriffspunkt auf diese Instanz.
 
 In `SiBank` ist der Konstruktor `private`, sodass kein Code außerhalb der Klasse
-ein Objekt erzeugen kann. Der Zugriff erfolgt ausschließlich über die statische
-Methode `getInstance()`:
+ein Objekt erzeugen kann. Die Erzeugung und der Zugriff sind in zwei separate
+statische Methoden aufgeteilt:
 
 ```java
 private static SiBank instance;
 
 
-public static SiBank getInstance(String name, String city, String bic) {
+public static void initialize(String name, String city, String bic) {
+  if (instance != null) {
+    throw new IllegalStateException("SiBank wurde bereits initialisiert.");
+  }
+  instance = new SiBank(name, city, bic);
+}
+
+
+public static SiBank getInstance() {
   if (instance == null) {
-    instance = new SiBank(name, city, bic);
+    throw new IllegalStateException(
+        "SiBank wurde noch nicht initialisiert. Bitte zuerst initialize() aufrufen.");
   }
   return instance;
 }
@@ -395,9 +403,20 @@ public static SiBank getInstance(String name, String city, String bic) {
 private SiBank(String name, String city, String bic) { ... }
 ```
 
-Beim ersten Aufruf wird die Instanz erzeugt, bei jedem weiteren Aufruf wird die
-bereits vorhandene zurückgegeben. Im Projekt ist es sinnvoll, dass nur eine
-einzige Bank existiert, die zentral alle Konten und Kunden verwaltet.
+`initialize()` wird genau einmal beim Programmstart aufgerufen und erzeugt die
+Instanz mit den Konfigurationsdaten. Ein doppelter Aufruf führt zu einer
+`IllegalStateException`. Danach liefert `getInstance()` ohne Parameter die
+bereits erzeugte Instanz zurück. Wird `getInstance()` vor `initialize()`
+aufgerufen, wird ebenfalls eine `IllegalStateException` geworfen.
+
+Diese Trennung hat zwei Vorteile gegenüber einer einzigen
+`getInstance(String, String, String)`-Methode: Erstens wird verhindert, dass die
+Konfigurationsparameter bei späteren Aufrufen stillschweigend ignoriert werden.
+Zweitens muss der Aufrufercode die Konfigurationsdaten nicht jedes Mal
+mitschleppen, wenn er nur die Instanz benötigt.
+
+Die Felder `name` und `city` sind als `final` deklariert, da sich die
+Stammdaten der Bank nach der Initialisierung nicht mehr ändern.
 
 > **Hinweis:** Diese Implementierung ist nicht thread-sicher. Für Anwendungen
 > mit mehreren Threads müsste die Erzeugung zusätzlich synchronisiert werden.
