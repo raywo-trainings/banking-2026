@@ -17,8 +17,17 @@ public class SiBank {
   private final AccountRepository accountRepository;
   private final CustomerRepository customerRepository;
 
+  private static SiBank instance;
 
-  public SiBank(String name, String city, String bic) {
+  public static SiBank getInstance(String name, String city, String bic) {
+    if (instance == null) {
+      instance = new SiBank(name, city, bic);
+    }
+    return instance;
+  }
+
+
+  private SiBank(String name, String city, String bic) {
     this.name = name;
     this.city = city;
     this.bic = bic;
