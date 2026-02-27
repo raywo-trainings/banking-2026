@@ -1,0 +1,135 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+skinparam classAttributeIconSize 0
+
+' ── Interface ──
+
+interface Identifiable<T> {
+  + getId(): T
+}
+
+' ── Enum ──
+
+enum AccountStatus {
+  ACTIVE
+  INACTIVE
+}
+
+' ── Record ──
+
+class Money <<record>> {
+  - amount: BigDecimal
+  - currency: Currency
+  + {static} euroOf(amount: BigDecimal): Money
+  + {static} zeroEuro(): Money
+  + add(other: Money): Money
+  + subtract(other: Money): Money
+  + {static} sameCurrencyComparator(expected: Currency): Comparator<Money>
+}
+
+' ── Customer ──
+
+class Customer {
+  - id: UUID
+  - name: String
+  - city: String
+  + getName(): String
+  + setName(name: String): void
+  + getCity(): String
+  + setCity(city: String): void
+  + getId(): UUID
+}
+
+' ── Account-Hierarchie ──
+
+abstract class Account {
+  - iban: String
+  - balance: Money
+  - interestRate: float
+  - owner: Customer
+  - status: AccountStatus
+  - transactions: List<Transaction>
+  + getId(): String
+  + getIban(): String
+  + getBalance(): Money
+  + getInterestRate(): float
+  + setInterestRate(interestRate: float): void
+  + getOwner(): Customer
+  + setOwner(owner: Customer): void
+  + getStatus(): AccountStatus
+  + setStatus(status: AccountStatus): void
+  + getTransactions(): List<Transaction>
+  + makeTransaction(transaction: Transaction): void
+  ~ deposit(amount: Money): void
+  ~ withdraw(amount: Money): void
+  # isAmountAvailable(amount: Money): boolean
+}
+
+class CurrentAccount {
+  - interestRate: float
+  - limit: Money
+  + getInterestRate(): float
+  + setInterestRate(interestRate: float): void
+  + getLimit(): Money
+  + setLimit(limit: Money): void
+  # isAmountAvailable(amount: Money): boolean
+}
+
+class SavingsAccount {
+  - interestRate: float
+  + getInterestRate(): float
+  + setInterestRate(interestRate: float): void
+}
+
+' ── Transaction-Hierarchie (sealed) ──
+
+abstract class Transaction <<sealed>> {
+  - iban: String
+  - purpose: String
+  - amount: Money
+  - timestamp: Instant
+  + getIban(): String
+  + getPurpose(): String
+  + getAmount(): Money
+  + getTimestamp(): Instant
+  + {abstract} applyTo(account: Account): void
+  + {abstract} getSymbol(): String
+}
+
+class Deposit <<final>> {
+  + applyTo(account: Account): void
+  + getSymbol(): String
+}
+
+class Withdrawal <<final>> {
+  + applyTo(account: Account): void
+  + getSymbol(): String
+}
+
+' ── Exceptions ──
+
+class AccountMismatchException <<Exception>>
+class InsufficientFundsException <<Exception>>
+class CurrencyMismatchException <<RuntimeException>>
+class InvalidAmountException <<RuntimeException>>
+
+' ── Beziehungen ──
+
+Identifiable <|.. Account
+Identifiable <|.. Customer
+
+Account <|-- CurrentAccount
+Account <|-- SavingsAccount
+
+Transaction <|-- Deposit
+Transaction <|-- Withdrawal
+
+Account "1" *-- "0..*" Transaction : transactions
+Account "0..*" --> "1" Customer : owner
+Account --> AccountStatus : status
+Account --> Money : balance
+CurrentAccount --> Money : limit
+Transaction --> Money : amount
+
+@enduml
