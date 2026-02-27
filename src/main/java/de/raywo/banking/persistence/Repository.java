@@ -16,6 +16,8 @@ public interface Repository<Id, T extends Identifiable<Id>> {
 
   void delete(T entity);
 
+  void deleteById(Id id);
+
   void deleteAll();
 
   int count();

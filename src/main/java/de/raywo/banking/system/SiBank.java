@@ -21,6 +21,7 @@ public class SiBank {
 
   private static SiBank instance;
 
+
   public static SiBank getInstance(String name, String city, String bic) {
     if (instance == null) {
       instance = new SiBank(name, city, bic);
@@ -86,6 +87,11 @@ public class SiBank {
   }
 
 
+  public void removeAccount(String iban) {
+    accountRepository.deleteById(iban);
+  }
+
+
   public Account getAccount(String iban) throws NotFoundException {
     return accountRepository
         .findById(iban)
@@ -95,6 +101,11 @@ public class SiBank {
 
   public void addCustomer(Customer customer) {
     customerRepository.save(customer);
+  }
+
+
+  public void removeCustomer(Customer customer) {
+    customerRepository.delete(customer);
   }
 
 
@@ -124,4 +135,5 @@ public class SiBank {
     return name + " (" + city + ")" +
         ", BIC: " + bic;
   }
+
 }

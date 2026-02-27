@@ -18,6 +18,7 @@ public class FileStorage<Id, T> implements Storage<Id, T> {
   }
 
 
+  @Deprecated
   public void saveAllOld(Map<Id, T> collection) throws IOException {
     FileOutputStream fos = new FileOutputStream(path);
     ObjectOutputStream outStream = new ObjectOutputStream(fos);
@@ -49,6 +50,7 @@ public class FileStorage<Id, T> implements Storage<Id, T> {
   }
 
 
+  @Deprecated
   public Map<Id, T> readAllOld() throws IOException, ClassNotFoundException {
     FileInputStream fis = new FileInputStream(path);
     ObjectInputStream inputStream = new ObjectInputStream(fis);
