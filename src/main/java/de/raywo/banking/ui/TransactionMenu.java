@@ -40,7 +40,7 @@ public class TransactionMenu {
     try {
       account.makeTransaction(deposit);
       System.out.println("Einzahlung erfolgreich. Neuer Saldo: " + account.getBalance());
-    } catch (InsufficientFundsException | AccountMismatchException e) {
+    } catch (InsufficientFundsException | AccountMismatchException | InactiveAccountException e) {
       System.out.println("Fehler: " + e.getMessage());
     }
   }
@@ -69,7 +69,7 @@ public class TransactionMenu {
       System.out.println("Auszahlung erfolgreich. Neuer Saldo: " + account.getBalance());
     } catch (InsufficientFundsException e) {
       System.out.println("Fehler: Nicht genügend Guthaben. " + e.getMessage());
-    } catch (AccountMismatchException e) {
+    } catch (AccountMismatchException | InactiveAccountException e) {
       System.out.println("Fehler: " + e.getMessage());
     }
   }
@@ -84,17 +84,7 @@ public class TransactionMenu {
     }
 
     System.out.println("Konto auswählen:");
-    for (int i = 0; i < accounts.size(); i++) {
-      System.out.println((i + 1) + ". " + accounts.get(i));
-    }
-
-    int index = BankingCLI.readInt("Nummer: ", scanner);
-    if (index < 1 || index > accounts.size()) {
-      System.out.println("Ungültige Auswahl.");
-      return null;
-    }
-
-    return accounts.get(index - 1);
+    return getAccount(accounts, scanner);
   }
 
 }

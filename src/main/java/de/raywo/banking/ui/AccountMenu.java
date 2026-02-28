@@ -156,6 +156,12 @@ public class AccountMenu {
     }
 
     System.out.println("--- Konto zum " + action + " auswählen ---");
+
+    return getAccount(accounts, scanner);
+  }
+
+
+  static Account getAccount(List<Account> accounts, Scanner scanner) {
     for (int i = 0; i < accounts.size(); i++) {
       System.out.println((i + 1) + ". " + accounts.get(i));
     }
@@ -170,15 +176,7 @@ public class AccountMenu {
   }
 
 
-  private Customer selectCustomerForAccount() {
-    List<Customer> customers = new ArrayList<>(bank.getCustomers());
-
-    if (customers.isEmpty()) {
-      System.out.println("Keine Kunden vorhanden. Bitte legen Sie zuerst einen Kunden an.");
-      return null;
-    }
-
-    System.out.println("Kontoinhaber auswählen:");
+  static Customer getCustomer(List<Customer> customers, Scanner scanner) {
     for (int i = 0; i < customers.size(); i++) {
       System.out.println((i + 1) + ". " + customers.get(i));
     }
@@ -190,6 +188,19 @@ public class AccountMenu {
     }
 
     return customers.get(index - 1);
+  }
+
+
+  private Customer selectCustomerForAccount() {
+    List<Customer> customers = new ArrayList<>(bank.getCustomers());
+
+    if (customers.isEmpty()) {
+      System.out.println("Keine Kunden vorhanden. Bitte legen Sie zuerst einen Kunden an.");
+      return null;
+    }
+
+    System.out.println("Kontoinhaber auswählen:");
+    return getCustomer(customers, scanner);
   }
 
 }

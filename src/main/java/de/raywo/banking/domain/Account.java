@@ -129,10 +129,15 @@ public abstract class Account implements Serializable, Identifiable<String> {
    * Diese Methode muss den konkreten Typ nicht kennen.</p>
    *
    * @param transaction die durchzuführende Transaktion
+   * @throws InactiveAccountException   falls das Konto inaktiv ist
    * @throws AccountMismatchException   falls die IBAN der Transaktion nicht zum Konto passt
    * @throws InsufficientFundsException falls bei einer Abhebung das Guthaben nicht ausreicht
    */
-  public void makeTransaction(Transaction transaction) throws InsufficientFundsException, AccountMismatchException {
+  public void makeTransaction(Transaction transaction) throws InsufficientFundsException, AccountMismatchException, InactiveAccountException {
+    if (status != AccountStatus.ACTIVE) {
+      throw new InactiveAccountException("Das Konto " + iban + " ist inaktiv und lässt keine Transaktionen zu.");
+    }
+
     if (!transaction.getIban().equals(iban)) {
       throw new AccountMismatchException("Die IBAN der Transaktion passt nicht zur IBAN des Kontos.");
     }

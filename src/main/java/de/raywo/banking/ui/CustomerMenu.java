@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import static de.raywo.banking.ui.AccountMenu.getCustomer;
+
 public class CustomerMenu {
 
   private final SiBank bank;
@@ -123,17 +125,7 @@ public class CustomerMenu {
     }
 
     System.out.println("--- Kunden zum " + action + " auswählen ---");
-    for (int i = 0; i < customers.size(); i++) {
-      System.out.println((i + 1) + ". " + customers.get(i));
-    }
-
-    int index = BankingCLI.readInt("Nummer: ", scanner);
-    if (index < 1 || index > customers.size()) {
-      System.out.println("Ungültige Auswahl.");
-      return null;
-    }
-
-    return customers.get(index - 1);
+    return getCustomer(customers, scanner);
   }
 
 }
