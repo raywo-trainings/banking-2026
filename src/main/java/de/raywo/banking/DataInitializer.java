@@ -5,8 +5,37 @@ import de.raywo.banking.system.SiBank;
 
 import java.math.BigDecimal;
 
+/**
+ * Erzeugt Beispieldaten (Kunden, Konten, Transaktionen) für den ersten
+ * Programmstart.
+ *
+ * <p>Diese Klasse wurde aus {@link Main} extrahiert, um die Verantwortlichkeiten
+ * sauber zu trennen: {@code Main} kümmert sich um den Programmstart,
+ * {@code DataInitializer} um die Erzeugung von Testdaten. Das entspricht dem
+ * <em>Single-Responsibility-Prinzip</em> – jede Klasse hat genau eine Aufgabe.</p>
+ *
+ * <p>Die Methode {@link #initializeData(SiBank)} zeigt im Zusammenspiel mehrere
+ * Konzepte: Erzeugen von Objekten ({@code new}), Polymorphie bei Transaktionen
+ * ({@link de.raywo.banking.domain.Deposit} und {@link de.raywo.banking.domain.Withdrawal}),
+ * Factory Methods ({@link de.raywo.banking.domain.Money#euroOf}), sowie die
+ * Behandlung mehrerer Checked Exceptions in einem {@code catch}-Block über
+ * Multi-Catch ({@code catch (A | B | C e)}).</p>
+ *
+ * @see Main
+ * @see MainUI
+ */
 public class DataInitializer {
 
+  /**
+   * Befüllt die Bank mit Beispielkunden, -konten und -transaktionen.
+   *
+   * <p>Wird nur aufgerufen, wenn noch keine Konten vorhanden sind (erster Start).
+   * Der {@code try-catch}-Block demonstriert <b>Multi-Catch</b> (seit Java 7):
+   * Mehrere Exception-Typen können mit {@code |} in einem einzigen
+   * {@code catch}-Block behandelt werden, wenn die Fehlerbehandlung identisch ist.</p>
+   *
+   * @param bank die {@link SiBank}-Instanz, in die die Daten eingefügt werden
+   */
   public static void initializeData(SiBank bank) {
     System.out.println("Initialisiere Daten...");
 
@@ -55,9 +84,7 @@ public class DataInitializer {
       System.out.println("Auszahlung erfolgreich. Neuer Saldo: " + acc1.getBalance());
       acc1.getTransactions().forEach(t -> System.out.println(t.toString()));
 
-//       ((CurrentAccount) acc1).setLimit(BigDecimal.valueOf(100));
-//      acc1.withdraw(BigDecimal.valueOf(200));
-//      System.out.println("Abhebung erfolgreich. Neuer Saldo: " + acc1.getBalance());
+      ((CurrentAccount) acc1).setLimit(Money.euroOf(BigDecimal.valueOf(1000.00)));
 
     } catch (InsufficientFundsException | AccountMismatchException | InactiveAccountException | CurrencyMismatchException exc) {
       System.err.println(exc.getMessage());
