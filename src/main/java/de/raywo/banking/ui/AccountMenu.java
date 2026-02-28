@@ -162,32 +162,12 @@ public class AccountMenu {
 
 
   static Account getAccount(List<Account> accounts, Scanner scanner) {
-    for (int i = 0; i < accounts.size(); i++) {
-      System.out.println((i + 1) + ". " + accounts.get(i));
-    }
-
-    int index = BankingCLI.readInt("Nummer: ", scanner);
-    if (index < 1 || index > accounts.size()) {
-      System.out.println("Ungültige Auswahl.");
-      return null;
-    }
-
-    return accounts.get(index - 1);
+    return getElement(accounts, scanner);
   }
 
 
   static Customer getCustomer(List<Customer> customers, Scanner scanner) {
-    for (int i = 0; i < customers.size(); i++) {
-      System.out.println((i + 1) + ". " + customers.get(i));
-    }
-
-    int index = BankingCLI.readInt("Nummer: ", scanner);
-    if (index < 1 || index > customers.size()) {
-      System.out.println("Ungültige Auswahl.");
-      return null;
-    }
-
-    return customers.get(index - 1);
+    return getElement(customers, scanner);
   }
 
 
@@ -201,6 +181,21 @@ public class AccountMenu {
 
     System.out.println("Kontoinhaber auswählen:");
     return getCustomer(customers, scanner);
+  }
+
+
+  static <T> T getElement(List<T> list, Scanner scanner) {
+    for (int i = 0; i < list.size(); i++) {
+      System.out.println((i + 1) + ". " + list.get(i));
+    }
+
+    int index = BankingCLI.readInt("Nummer: ", scanner);
+    if (index < 1 || index > list.size()) {
+      System.out.println("Ungültige Auswahl.");
+      return null;
+    }
+
+    return list.get(index - 1);
   }
 
 }

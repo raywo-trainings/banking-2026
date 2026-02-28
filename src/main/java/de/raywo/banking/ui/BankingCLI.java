@@ -2,6 +2,7 @@ package de.raywo.banking.ui;
 
 import de.raywo.banking.system.SiBank;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Scanner;
 
@@ -42,6 +43,12 @@ public class BankingCLI {
       }
 
       System.out.println();
+    }
+
+    try {
+      bank.persist();
+    } catch (IOException e) {
+      System.err.println("Fehler beim Speichern der Daten: " + e.getMessage());
     }
 
     System.out.println("Auf Wiedersehen!");

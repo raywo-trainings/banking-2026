@@ -31,8 +31,8 @@ eine konkrete Instanz einer Klasse, die mit `new` erzeugt wird.
 
 Im Projekt sind `Customer` und `Account` die zentralen Klassen. Ein `Customer`
 besitzt eine automatisch generierte ID, einen Namen und eine Stadt. Ein
-`Account` hat eine IBAN, einen Kontostand, einen Inhaber und eine Liste von
-Transaktionen.
+`Account` hat eine IBAN, einen Kontostand, einen Inhaber, einen Status
+(`AccountStatus`) und eine Liste von Transaktionen.
 
 **Siehe:** `domain/Customer.java`, `domain/Account.java`
 
@@ -94,6 +94,8 @@ sollte. Im Projekt sind das:
 
 - `InsufficientFundsException` – zu wenig Guthaben für eine Abhebung
 - `AccountMismatchException` – die IBAN einer Transaktion passt nicht zum Konto
+- `InactiveAccountException` – eine Transaktion wird auf einem inaktiven Konto
+  versucht
 - `NotFoundException` – ein gesuchtes Objekt wurde nicht gefunden
 
 **Unchecked Exceptions** erben von `RuntimeException` und müssen nicht explizit
@@ -107,7 +109,16 @@ Der Compiler erzwingt bei Checked Exceptions, dass Sie sich um den Fehlerfall
 kümmern. Bei Unchecked Exceptions tut er das nicht, weil davon ausgegangen wird,
 dass der Programmierer den Fehler durch korrekten Code vermeidet.
 
+Die Entscheidung, ob eine Exception checked oder unchecked sein soll, hängt
+davon ab, ob es sich um eine erwartbare Geschäftssituation handelt (checked)
+oder um einen Programmierfehler, der durch korrekten Code vermeidbar ist
+(unchecked). Ein inaktives Konto ist z. B. eine reguläre Geschäftssituation –
+daher ist `InactiveAccountException` eine Checked Exception. Ein
+Währungs-Mismatch hingegen sollte im normalen Betrieb nie auftreten und ist
+daher unchecked.
+
 **Siehe:** `domain/InsufficientFundsException.java`,
+`domain/InactiveAccountException.java`,
 `domain/CurrencyMismatchException.java`, `system/NotFoundException.java`
 
 ## 5. Vererbung und abstrakte Klassen
@@ -154,9 +165,14 @@ aufruft, wird je nach tatsächlichem Kontotyp die richtige Implementierung
 ausgeführt – ohne dass die aufrufende Stelle den konkreten Typ kennen muss.
 
 Ebenso überschreiben `Deposit` und `Withdrawal` die abstrakte Methode `applyTo`
-der Klasse `Transaction`. Die Methode `Account.makeTransaction()` ruft lediglich
-`transaction.applyTo(this)` auf und überlässt es der konkreten Transaktion, ob
+der Klasse `Transaction`. Die Methode `Account.makeTransaction()` prüft zunächst,
+ob das Konto aktiv ist (`AccountStatus.ACTIVE`), und ruft dann
+`transaction.applyTo(this)` auf. Die konkrete Transaktion entscheidet, ob
 eingezahlt oder abgehoben wird.
+
+Die Status-Prüfung in `makeTransaction()` ist ein Beispiel dafür, dass fachliche
+Regeln im Domain-Modell durchgesetzt werden – nicht in der UI oder der
+System-Schicht. Dadurch ist die Regel unabhängig vom Aufrufer gewährleistet.
 
 ### Sealed Classes
 

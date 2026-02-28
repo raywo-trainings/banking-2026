@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import static de.raywo.banking.ui.AccountMenu.getAccount;
+
 public class TransactionMenu {
 
   private final SiBank bank;
